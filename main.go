@@ -9,6 +9,7 @@ import (
 	"lucaswilliameufrasio/simple-kms-plugin/utils"
 	"net"
 	"os"
+	"strings"
 
 	"google.golang.org/grpc"
 )
@@ -18,7 +19,10 @@ type KeyManagementServer struct {
 }
 
 var (
-	EncryptionSecretKey = os.Getenv("ENCRYPTION_SECRET")
+	// This is required, so the fallback is empty
+	EncryptionSecretKey = utils.GetEnv("ENCRYPTION_SECRET", "")
+	ServerFile          = utils.GetEnv("SOCKET_SERVER_FILE", "/tmp/test_kms.sock")
+	Protocol            = utils.GetEnv("PROTOCOL", "tcp")
 )
 
 func (kms *KeyManagementServer) Encrypt(ctx context.Context, req *v1beta1.EncryptRequest) (*v1beta1.EncryptResponse, error) {
@@ -82,13 +86,42 @@ func (kms *KeyManagementServer) Version(ctx context.Context, req *v1beta1.Versio
 	return response, nil
 }
 
-func main() {
-	fmt.Println(len(EncryptionSecretKey))
-	address := "localhost:9997"
-	conn, err := net.Listen("tcp", address)
+func getUnixListenerConnection() net.Listener {
+	os.Remove(ServerFile)
+	server_addr, err := net.ResolveUnixAddr("unix", ServerFile)
 
 	if err != nil {
+		log.Fatal("failed to resolve unix addr")
+	}
+	conn, err := net.ListenUnix("unix", server_addr)
+	if err != nil {
+		log.Fatalf("failed to listen: %v", err)
+	}
+
+	return conn
+}
+
+func getTCPListenerConnection() net.Listener {
+	address := "localhost:9997"
+	conn, err := net.Listen("tcp", address)
+	if err != nil {
 		log.Fatal("tcp connection err: ", err.Error())
+	}
+
+	fmt.Println("Listening on address: ", address)
+
+	return conn
+}
+
+func startGRPCServer() {
+	fmt.Println(len(EncryptionSecretKey))
+
+	var conn net.Listener
+
+	if strings.ToLower(Protocol) == "tcp" {
+		conn = getTCPListenerConnection()
+	} else {
+		conn = getUnixListenerConnection()
 	}
 
 	grpcServer := grpc.NewServer()
@@ -97,9 +130,11 @@ func main() {
 
 	v1beta1.RegisterKeyManagementServiceServer(grpcServer, &kmsServer)
 
-	fmt.Println("Starting gRPC server at: ", address)
-
 	if err := grpcServer.Serve(conn); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func main() {
+	startGRPCServer()
 }
