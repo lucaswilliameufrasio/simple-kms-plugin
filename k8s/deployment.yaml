@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simple-kms-plugin
+  labels:
+    app: simple-kms-plugin
+spec:
+  selector:
+    matchLabels:
+      app: simple-kms-plugin
+  template:
+    metadata:
+      labels:
+        app: simple-kms-plugin
+    spec:
+      containers:
+      - name: simple-kms-plugin
+        image: lucaswilliameufrasio/simple-kms-plugin:0.0.3
+        env:
+        - name: ENCRYPTION_SECRET
+          value: "@pEg<P+lRi<G>?e,dZpWJxyj"
+        - name: PROTOCOL
+          value: "unix"
+        volumeMounts:
+        - name: kms-socket
+          mountPath: /tmp
+      - name: tcp
+        image: lucaswilliameufrasio/simple-kms-plugin:0.0.3
+        env:
+        - name: ENCRYPTION_SECRET
+          value: "@pEg<P+lRi<G>?e,dZpWJxyj"
+        - name: PROTOCOL
+          value: "tcp"
+      volumes:
+      - name: kms-socket
+        hostPath:
+          path: /tmp
