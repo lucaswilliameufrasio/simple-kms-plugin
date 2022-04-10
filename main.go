@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/base64"
 	"fmt"
 	"log"
 	v1beta1 "lucaswilliameufrasio/simple-kms-plugin/proto"
@@ -26,14 +25,8 @@ var (
 )
 
 func (kms *KeyManagementServer) Encrypt(ctx context.Context, req *v1beta1.EncryptRequest) (*v1beta1.EncryptResponse, error) {
-	plainDecoded, err := base64.StdEncoding.DecodeString(string(req.Plain))
+	plainString := string(req.Plain)
 
-	if err != nil {
-		fmt.Println(err.Error())
-
-		return nil, err
-	}
-	plainString := string(plainDecoded)
 	encryptedPlain, err := utils.Encrypt(plainString, EncryptionSecretKey)
 
 	if err != nil {
