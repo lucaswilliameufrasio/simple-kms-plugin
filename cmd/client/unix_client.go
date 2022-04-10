@@ -1,4 +1,4 @@
-package client
+package main
 
 import (
 	"context"
@@ -13,9 +13,9 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-const (
+var (
 	ClientFile = "/tmp/client_unix_kms.sock"
-	ServerFile = ""
+	ServerFile = utils.GetEnv("SOCKET_SERVER_FILE", "/tmp/test_kms.sock")
 )
 
 func UnixConnect(addr string, t time.Duration) (net.Conn, error) {
