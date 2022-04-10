@@ -22,6 +22,7 @@ var (
 	EncryptionSecretKey = utils.GetEnv("ENCRYPTION_SECRET", "")
 	ServerFile          = utils.GetEnv("SOCKET_SERVER_FILE", "/tmp/test_kms.sock")
 	Protocol            = utils.GetEnv("PROTOCOL", "tcp")
+	VersionSupported    = "v1beta1"
 )
 
 func (kms *KeyManagementServer) Encrypt(ctx context.Context, req *v1beta1.EncryptRequest) (*v1beta1.EncryptResponse, error) {
@@ -62,16 +63,15 @@ func (kms *KeyManagementServer) Decrypt(ctx context.Context, req *v1beta1.Decryp
 }
 
 func (kms *KeyManagementServer) Version(ctx context.Context, req *v1beta1.VersionRequest) (*v1beta1.VersionResponse, error) {
-	versionSupported := "v1beta1"
 	version := req.Version
 
-	if version != "v1beta1" {
+	if version != VersionSupported {
 		versionNotSupportedError := fmt.Errorf("VersionNotSupportedError")
 		return nil, versionNotSupportedError
 	}
 
 	response := &v1beta1.VersionResponse{
-		Version:        versionSupported,
+		Version:        VersionSupported,
 		RuntimeName:    "simple-kms-plugin",
 		RuntimeVersion: "0.0.1",
 	}
