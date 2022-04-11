@@ -41,21 +41,21 @@ SOCKET_SERVER_FILE=./tmp/test_kms.sock go run cmd/client/unix_client.go
 https://kubernetes.io/docs/tasks/administer-cluster/kms-provider/
 
 
-# How to test the plugin listening to UNIX network with client example
+# How to test the plugin listening to UNIX network with the client example
 
 - In one terminal, run `PROTOCOL="unix" ENCRYPTION_SECRET="@pEg<P+lRi<G>?e,dZpWJxyj" make run`
 - In another terminal, run `go run cmd/unix_client/client.go`
 
-# How to test the plugin listening to TCP network with client example
+# How to test the plugin listening to TCP network with the client example
 
 - In one terminal, run `ENCRYPTION_SECRET="@pEg<P+lRi<G>?e,dZpWJxyj" make run`
 - In another terminal, run `go run cmd/tcp_client/client.go`
 
 
-# How i have tested it with Kind
+# How I have tested it with Kind
 
 - Create a DaemonSet resource with this command: `kubectl apply -f k8s/daemon.yaml`
-- Override a label of master node that on my system had an empty value. I fixed it with `kubectl label nodes kind-control-plane node-role.kubernetes.io/master=true --overwrite`
+- Override a label of the master node that on my system had an empty value. I fixed it with `kubectl label nodes kind-control-plane node-role.kubernetes.io/master=true --overwrite`
 - Attach to kind-control-plane bash
  - I have used `docker exec -it ad619f1862a9 bash` but you can follow [this tutorial](https://blog.adamgamboa.dev/connecting-shell-to-a-node-in-kubernetes/) to do it in the terminal or just use [Lens](https://k8slens.dev/).
 - Navigate to `/etc/kubernetes/pki`
