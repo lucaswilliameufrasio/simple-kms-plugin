@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: simple-kms-plugin
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      name: simple-kms-plugin
+  template:
+    metadata:
+      labels:
+        name: simple-kms-plugin
+    spec:
+     nodeSelector:
+       node-role.kubernetes.io/master: "true"
+     hostNetwork: true
+     restartPolicy: Always
+     volumes:
+       - name: simple-kms-plugin-dir
+         hostPath:
+           path: /var/run/simple-kms-plugin
+           type: DirectoryOrCreate
+     tolerations:
+       - key: node-role.kubernetes.io/master
+         effect: NoSchedule
+     containers:
+       - name: simple-kms-plugin
+         image: lucaswilliameufrasio/simple-kms-plugin:0.0.6
+         command: 
+          - /bin/kms-plugin
+         env:
+            - name: ENCRYPTION_SECRET
+              value: "@pEg<P+lRi<G>?e,dZpWJxyj"
+            - name: PROTOCOL
+              value: "unix"
+            - name: SOCKET_SERVER_FILE
+              value: /var/run/simple-kms-plugin/server.sock
+         volumeMounts:
+           - name: simple-kms-plugin-dir
+             mountPath: /var/run/simple-kms-plugin
+             readOnly: false
