@@ -52,7 +52,7 @@ https://kubernetes.io/docs/tasks/administer-cluster/kms-provider/
 - In another terminal, run `go run cmd/tcp_client/client.go`
 
 
-# (WIP) How i have tested it with Kind
+# How i have tested it with Kind
 
 - Create a DaemonSet resource with this command: `kubectl apply -f k8s/daemon.yaml`
 - Override a label of master node that on my system had an empty value. I fixed it with `kubectl label nodes kind-control-plane node-role.kubernetes.io/master=true --overwrite`
