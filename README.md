@@ -2,6 +2,9 @@
 
 A project developed for `learning purposes` and to be used on a k3s cluster.
 
+
+Note: if you want to keep your credentials safe when putting them on manifest files on git, you should take a look at [this article](https://learnk8s.io/kubernetes-secrets-in-git).
+
 # How to run
 
 ## TCP
@@ -108,6 +111,7 @@ kubectl create secret generic simple-kms-plugin-secret -n default --from-literal
 kubectl get secret simple-kms-plugin-secret -o=jsonpath='{.data.simple}' | base64 -d
 
 ```
+
 
 
 # References
