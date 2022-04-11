@@ -55,6 +55,7 @@ https://kubernetes.io/docs/tasks/administer-cluster/kms-provider/
 # (WIP) How i have tested it with Kind
 
 - Create a DaemonSet resource with this command: `kubectl apply -f k8s/daemon.yaml`
+- Override a label of master node that on my system had an empty value. I fixed it with `kubectl label nodes kind-control-plane node-role.kubernetes.io/master=true --overwrite`
 - Attach to kind-control-plane bash
  - I have used `docker exec -it ad619f1862a9 bash` but you can follow [this tutorial](https://blog.adamgamboa.dev/connecting-shell-to-a-node-in-kubernetes/) to do it in the terminal or just use [Lens](https://k8slens.dev/).
 - Navigate to `/etc/kubernetes/pki`
@@ -73,8 +74,8 @@ resources:
           timeout: 3s
       - identity: {}
 ```
-- Add the following flag to `/etc/kubernetes/manifests/kube-apiserver.yaml`: `--encryption-provider-config=/etc/kubernetes/pki/encryption-provider-config.yaml`
-![image](https://user-images.githubusercontent.com/34021576/162605102-220b8021-60cc-462d-b6af-08f3a15e8eaa.png)
+- Add the following flag to `/etc/kubernetes/manifests/kube-apiserver.yaml`: `- --encryption-provider-config=/etc/kubernetes/pki/encryption-provider-config.yaml`
+![image](https://user-images.githubusercontent.com/34021576/162663659-7b6b491d-d282-44af-af7a-289781cdc267.png)
 - Add the following volume directives at `kube-apiserver.yaml`:
 ``` yaml
 ...
