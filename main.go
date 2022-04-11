@@ -26,6 +26,7 @@ var (
 )
 
 func (kms *KeyManagementServer) Encrypt(ctx context.Context, req *v1beta1.EncryptRequest) (*v1beta1.EncryptResponse, error) {
+	fmt.Println("Encrypt called")
 	plainString := string(req.Plain)
 
 	encryptedPlain, err := utils.Encrypt(plainString, EncryptionSecretKey)
@@ -44,6 +45,7 @@ func (kms *KeyManagementServer) Encrypt(ctx context.Context, req *v1beta1.Encryp
 }
 
 func (kms *KeyManagementServer) Decrypt(ctx context.Context, req *v1beta1.DecryptRequest) (*v1beta1.DecryptResponse, error) {
+	fmt.Println("Decrypt called")
 	cipherString := string(req.Cipher)
 
 	decrypted, err := utils.Decrypt(cipherString, EncryptionSecretKey)
