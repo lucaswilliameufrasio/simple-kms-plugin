@@ -57,7 +57,7 @@ https://kubernetes.io/docs/tasks/administer-cluster/kms-provider/
 - Create a DaemonSet resource with this command: `kubectl apply -f k8s/daemon.yaml`
 - Override a label of the master node that on my system had an empty value. I fixed it with `kubectl label nodes kind-control-plane node-role.kubernetes.io/master=true --overwrite`
 - Attach to kind-control-plane bash
- - I have used `docker exec -it ad619f1862a9 bash` but you can follow [this tutorial](https://blog.adamgamboa.dev/connecting-shell-to-a-node-in-kubernetes/) to do it in the terminal or just use [Lens](https://k8slens.dev/).
+ - I have used `docker exec -it ad619f1862a9 bash` but you can follow [this tutorial](https://blog.adamgamboa.dev/connecting-shell-to-a-node-in-kubernetes/) to attach to master's node or just use [Lens](https://k8slens.dev/).
 - Navigate to `/etc/kubernetes/pki`
 - Create a file called `encryption-provider-config.yaml` with this content:
 ```
